@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Mostrar Tags rfid
+        </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/fontawesome/css/all.css">
+        <script src="/bootstrap/js/jquery-3.3.1.slim.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <link rel="shortcut icon" href="/xyz/img/logo-dark.png" type="image/png"/>
+        <script src="/js/angular.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module('serviceApp', []);
+            app.controller('serviceCtrl', function ($scope, $http) {
+                $http({
+                    method: 'GET',
+                    url: 'http://localhost/rfid/index.php/rfid/tag/tags'
+                }).then(function success(response) {
+                    $scope.data = response.data;
+                    $scope.status = response.status;
+                }, function error(response) {
+                });
+            });
+            app.controller('putserviceCtrl', function ($scope, $http) {
+                $scope.tag = null;
+                $scope.putdata = function (tag) {
+                    var data = {
+                        tag: tag
+                    };
+                    //Call the services
+                    $http.put('http://localhost/rfid/index.php/rfid/tag/tag', JSON.stringify(data)).then(function (response) {
+                        if (response.data)
+                            $scope.msg = response.data.msg;
+                    }, function (response) {
+                        $scope.msg = response.data.msg;
+                    });
+                };
+            });
+        </script>
+    </head>
+    <body ng-app="serviceApp">
+        <div ng-controller="putserviceCtrl">
+            <div>
+                identificador : <input ng-model="tag" /><br /><br />
+                <input type="button" class="btn btn-success" value="Guardar tag" ng-click="putdata(tag)" /> <br /><br />
+            </div>
+            <p>Output Message : {{msg}}</p>
+        </div>
+        <div ng-controller="serviceCtrl">
+            <table class="table table-hover">
+                <tr>
+                    <th>id</th>
+                    <th>tag</th>
+                    <th>status</th>
+                </tr>
+                <tr ng-repeat="tag in data.tags">
+                    <td>{{ tag.id }}</td>
+                    <td>{{ tag.tag }}</td>
+                    <td>{{ tag.status }}</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            AngularJs $http.post() Service Response Example
+        </title>
+        <script src="/js/angular.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module('postserviceApp', []);
+            app.controller('postserviceCtrl', function ($scope, $http) {
+                $scope.id = null;
+                $scope.tag = null;
+                $scope.status = null;
+                $scope.postdata = function (id, tag, status) {
+            var data = {
+                id: id,
+                tag: tag,
+                status: status
+            };
+            //Call the services
+            $http.post('http://localhost/rfid/index.php/rfid/tag/tag', JSON.stringify(data)).then(function (response) {
+                if (response.data)
+                $scope.msg = "Post Data Submitted Successfully!";
+                    }, function (response) {
+                        $scope.msg = "Service not Exists";
+                        $scope.statusval = response.status;
+                        $scope.statustext = response.statusText;
+                        $scope.headers = response.headers();
+                    });
+                };
+            });
+        </script>
+    </head>
+    <body>
+        <div ng-app="postserviceApp" ng-controller="postserviceCtrl">
+            <div>
+                id : <input ng-model="id" /><br/><br/>
+                tag : <input ng-model="tag" /><br/><br/>
+                status : <input ng-model="status" /><br/><br/>
+                <input type="button" value="Send" ng-click="postdata(id, tag, status)" /> <br/><br/>
+            </div>
+            <p>Output Message : {{msg}}</p>
+        </div>
+    </body>
+</html>

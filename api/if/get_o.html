@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            AngularJs $http.get() Service Response Example
+        </title>
+        <script src="/js/angular.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module('serviceApp', []);
+            app.controller('serviceCtrl', function ($scope, $http) {
+                $http({
+                    method: 'GET',
+                    url: 'http://localhost/rfid/index.php/rfid/tag/tag?id=1'
+                }).then(function success(response) {
+                    $scope.myWelcome = response.data;
+                    $scope.statusval = response.status;
+                    $scope.statustext = response.statusText;
+                    $scope.headers = response.headers();
+                    }, function error(response) {
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div ng-app="serviceApp" ng-controller="serviceCtrl">
+            <p>Hi, Guest</p>
+            <h1>{{myWelcome}}</h1>
+            <p>StatusCode: {{statusval}}</p>
+            <p>Status: {{statustext}}</p>
+            <p>Response Headers: {{headers}}</p>
+        </div>
+    </body>
+</html>

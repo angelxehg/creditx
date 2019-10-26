@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Mostrar Estudiantes rfid
+        </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/fontawesome/css/all.css">
+        <script src="/bootstrap/js/jquery-3.3.1.slim.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <link rel="shortcut icon" href="/xyz/img/logo-dark.png" type="image/png"/>
+        <script src="/js/angular.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module('serviceApp', []);
+            app.controller('serviceCtrl', function ($scope, $http) {
+                $http({
+                    method: 'GET',
+                    url: 'http://localhost/rfid/index.php/rfid/estudiante/estudiantes'
+                }).then(function success(response) {
+                    $scope.data = response.data;
+                    $scope.status = response.status;
+                }, function error(response) {
+                });
+            });
+            app.controller('putserviceCtrl', function ($scope, $http) {
+                $scope.estudiante = null;
+                $scope.putdata = function (nombre, apellido_paterno, apellido_materno, matricula, carrera) {
+                    var data = {
+                        nombre: nombre,
+                        apellido_paterno: apellido_paterno,
+                        apellido_materno: apellido_materno,
+                        matricula: matricula,
+                        carrera: carrera
+                    };
+                    //Call the services
+                    $http.put('http://localhost/rfid/index.php/rfid/estudiante/estudiante', JSON.stringify(data)).then(function (response) {
+                        if (response.data)
+                            $scope.msg = response.data.msg;
+                    }, function (response) {
+                        $scope.msg = response.data.msg;
+                    });
+                };
+            });
+        </script>
+    </head>
+    <body ng-app="serviceApp">
+        <div ng-controller="putserviceCtrl">
+            <form>
+                nombre : <input name="nombre" ng-model="nombre" /><br /><br />
+                apellido materno : <input name="apellido_paterno" ng-model="apellido_paterno" /><br /><br />
+                apellido paterno : <input name="apellido_materno" ng-model="apellido_materno" /><br /><br />
+                matricula : <input name="matricula" ng-model="matricula" /><br /><br />
+                carrera : <input name="carrera" ng-model="carrera" /><br /><br />
+                <input type="button" class="btn btn-success" value="Guardar estudiante" ng-click="putdata(nombre, apellido_paterno, apellido_materno, matricula, carrera)" /> <br /><br />
+            </form>
+            <p>Output Message : {{msg}}</p>
+        </div>
+        <div ng-controller="serviceCtrl">
+            <table class="table table-hover">
+                <tr>
+                    <th>id</th>
+                    <th>nombre</th>
+                    <th>apellido materno</th>
+                    <th>apellido paterno</th>
+                    <th>matricula</th>
+                    <th>carrera</th>
+                    <th>status</th>
+                </tr>
+                <tr ng-repeat="estudiante in data.estudiantes">
+                    <td>{{ estudiante.id }}</td>
+                    <td>{{ estudiante.nombre }}</td>
+                    <td>{{ estudiante.apellido_paterno }}</td>
+                    <td>{{ estudiante.apellido_materno }}</td>
+                    <td>{{ estudiante.matricula }}</td>
+                    <td>{{ estudiante.carrera }}</td>
+                    <td>{{ estudiante.status }}</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
